@@ -1,0 +1,75 @@
+/** Resource Creation**\
+
+az group create --name azure-traffic-manager-introduction --location northeurope
+
+username=rootAy
+password='yourpassword'
+
+/** First Vm Creation**\
+
+az vm create \
+    --resource-group azure-traffic-manager-introduction \
+    --location northeurope \
+    --nsg-rule rdp \
+    --name vm-northeurope \
+    --image Win2019Datacenter \
+    --public-ip-sku Standard \
+    --admin-username rootAy
+
+
+/** Second Vm Creation**\
+
+az vm create \
+    --resource-group azure-traffic-manager-introduction \
+    --location eastus2 \
+    --name vm-eastus2 \
+    --image Win2019Datacenter \
+    --public-ip-sku Standard \
+    --nsg-rule rdp \
+    --admin-username rootAy
+
+/** App Service Plan Creation 1**\
+
+az appservice plan create \
+  --name web-eastus2-plan \
+  --resource-group azure-traffic-manager-introduction \
+  --location eastus2 \
+  --sku S1
+
+/** App Service Creation 1**\  
+
+appname=demo-web-eastus2-$RANDOM$RANDOM
+az webapp create \
+  --name coolest \
+  --resource-group azure-traffic-manager-introduction \
+  -p web-eastus2-plan
+  
+/** App Service Plan Creation 2**\
+
+az appservice plan create \
+  --name web-northeurope-plan \
+  --resource-group azure-traffic-manager-introduction \
+  --location northeurope \
+  --sku S1
+
+/** App Service Creation 2**\
+
+appname=demo-web-northeurope-$RANDOM$RANDOM
+az webapp create \
+  --name xlest \
+  --resource-group azure-traffic-manager-introduction \
+  -p web-northeurope-plan
+  
+/** Display all the Webapp's on the resouce group**\
+
+az webapp list --resource-group azure-traffic-manager-introduction --query "[].enabledHostNames" -o jsonc
+
+
+
+
+
+
+
+az vm list \
+  --resource-group azure-traffic-manager-introduction \
+  -o jsonc
